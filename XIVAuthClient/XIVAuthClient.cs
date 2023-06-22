@@ -8,6 +8,8 @@ namespace XIVAuth
         public XIVAuthClientOptions Options { get; }
         private HttpMessageHandler HttpHandler { get; }
 
+        public XIVAuthClient() : this(new()) { /* Empty */ }
+
         public XIVAuthClient(XIVAuthClientOptions options) : this(options, new SocketsHttpHandler(), true) { /* Empty */ }
 
         public XIVAuthClient(XIVAuthClientOptions options, HttpMessageHandler httpHandler, bool ownHandler = true)
