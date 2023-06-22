@@ -19,12 +19,13 @@ namespace XIVAuth
             this._ownHandler = ownHandler;
         }
 
-        public IXIVAuthUserClient GetUser(string token) => new XIVAuthUserClient(this, this.HttpClientFactory(token));
+        public IXIVAuthUserClient GetUser(string token) => this.GetUser(new AuthenticationHeaderValue("Bearer", token));
+        public IXIVAuthUserClient GetUser(AuthenticationHeaderValue? authentication) => new XIVAuthUserClient(this, this.HttpClientFactory(authentication));
 
-        private HttpClient HttpClientFactory(string token)
+        private HttpClient HttpClientFactory(AuthenticationHeaderValue? authentication)
         {
             var httpClient = new HttpClient(this.HttpHandler, false);
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            httpClient.DefaultRequestHeaders.Authorization = authentication;
             return httpClient;
         }
 
