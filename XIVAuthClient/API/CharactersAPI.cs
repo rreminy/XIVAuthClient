@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Net;
+using System.Net.Http.Json;
 using XIVAuth.Models;
 
 namespace XIVAuth.API
@@ -24,6 +25,27 @@ namespace XIVAuth.API
         public Task<IEnumerable<CharacterModel>> GetAllAsync(CancellationToken cancellationToken = default)
         {
             return this.Options.Helper.PerformGetAsync<IEnumerable<CharacterModel>>(this.HttpClient, $"characters", cancellationToken);
+        }
+
+        public Task RegisterAsync(uint lodestoneId, CancellationToken cancellationToken = default)
+        {
+            return this.RegisterAsyncCore(new() { LodestoneId = lodestoneId }, cancellationToken);
+        }
+
+        public Task RegisterAsync(string name, string world, CancellationToken cancellationToken = default)
+        {
+            return this.RegisterAsyncCore(new() { Name = name, World = world }, cancellationToken);
+        }
+
+        private async Task RegisterAsyncCore(CharacterRegistrationModel registration, CancellationToken cancellationToken = default)
+        {
+            var response = await this.HttpClient.PostAsync(this.Options.Helper.GetEndpointUrl($"characters"), JsonContent.Create(registration), cancellationToken);
+            Debug.Assert(response.StatusCode is HttpStatusCode.NoContent or HttpStatusCode.UnprocessableEntity);
+            if (response.StatusCode is HttpStatusCode.UnprocessableEntity)
+            {
+                // TODO: Error handling not implemented: Error list
+                response.EnsureSuccessStatusCode(); // Assert: This will throw
+            }
         }
 
         public async Task<bool> RefreshAsync(uint lodestoneId, CancellationToken cancellationToken = default)
@@ -76,6 +98,8 @@ namespace XIVAuth.API
         {
             // TODO: DELETE /characters/{lodestone_id}/verify
             // Do we really want this?
+
+            // TODO: What does this return...
 
             throw new NotImplementedException($"Banned reason: VIP - Executing the {nameof(UnverifyAsync)} method");
         }

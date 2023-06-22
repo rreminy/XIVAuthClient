@@ -14,9 +14,6 @@ namespace XIVAuth.API
             this.HttpClient = httpClient;
         }
 
-        /// <summary>Gets information about the current authenticated user</summary>
-        /// <param name="cancellationToken">Cancellation token</param>
-        /// <returns>User information</returns>
         public Task<UserModel> GetAsync(CancellationToken cancellationToken = default)
         {
             return this.Options.Helper.PerformGetAsync<UserModel>(this.HttpClient, "user", cancellationToken);

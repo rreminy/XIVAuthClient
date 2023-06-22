@@ -17,6 +17,10 @@ namespace XIVAuth.API
         /// <remarks>Minimum required scope: character</remarks>
         public Task<IEnumerable<CharacterModel>> GetAllAsync(CancellationToken cancellationToken = default);
 
+        public Task RegisterAsync(uint lodestoneId, CancellationToken cancellationToken = default);
+
+        public Task RegisterAsync(string name, string world, CancellationToken cancellationToken = default);
+
         /// <summary>Refresh character information</summary>
         /// <param name="lodestoneId">Lodestone ID</param>
         /// <param name="cancellationToken">Cancellation token</param>
