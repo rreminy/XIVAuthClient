@@ -2,7 +2,7 @@
 
 namespace XIVAuth
 {
-    public interface IXIVAuthUserClient
+    public interface IXIVAuthUserClient : IDisposable
     {
         public XIVAuthClientOptions Options { get; }
         public ICharactersAPI Characters { get; }

@@ -2,7 +2,7 @@
 
 namespace XIVAuth
 {
-    internal sealed class XIVAuthUserClient : IXIVAuthUserClient, IDisposable
+    internal sealed class XIVAuthUserClient : IXIVAuthUserClient
     {
         private IXIVAuthClient Client { get; }
         private HttpClient HttpClient { get; }

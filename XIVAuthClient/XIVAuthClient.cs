@@ -2,7 +2,7 @@
 
 namespace XIVAuth
 {
-    public sealed class XIVAuthClient : IXIVAuthClient, IDisposable
+    public sealed class XIVAuthClient : IXIVAuthClient
     {
         private readonly bool _ownHandler;
         public XIVAuthClientOptions Options { get; }
