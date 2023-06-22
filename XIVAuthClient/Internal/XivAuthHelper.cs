@@ -15,7 +15,7 @@ namespace XIVAuth.Internal
 
         public async Task<T> PerformGetAsync<T>(HttpClient httpClient, string endpoint, CancellationToken cancellationToken = default)
         {
-            var response = await httpClient.GetAsync(endpoint, cancellationToken);
+            var response = await httpClient.GetAsync(this.GetEndpointUrl(endpoint), cancellationToken);
             response.EnsureSuccessStatusCode();
             using var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
             return await JsonSerializer.DeserializeAsync<T>(stream, cancellationToken: cancellationToken) ?? throw new JsonException();

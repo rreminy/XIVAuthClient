@@ -1,4 +1,6 @@
-﻿using XIVAuth.Models;
+﻿using System.Diagnostics;
+using System.Net;
+using XIVAuth.Models;
 
 namespace XIVAuth.API
 {
@@ -24,24 +26,11 @@ namespace XIVAuth.API
             return this.Options.Helper.PerformGetAsync<IEnumerable<CharacterModel>>(this.HttpClient, $"characters", cancellationToken);
         }
 
-        public Task<bool> RefreshAsync(uint lodestoneId, CancellationToken cancellationToken = default)
+        public async Task<bool> RefreshAsync(uint lodestoneId, CancellationToken cancellationToken = default)
         {
-            // TODO: POST /characters/{lodestone_id}/refresh
-            // Status code 202 => true
-            // Status code 422? => false
-            /*
-             * Scopes required: character:manage
-             * 
-             * This API route will trigger an asynchronous Lodestone refresh for the specified character.
-             * A sync will only be considered if it has been at least 24 hours since the last Lodestone sync.
-             * Note that a Lodestone sync may have been triggered by other systems, so assuming 24 hours
-             * from the last call of this API is insufficient.
-             * 
-             * Returns HTTP code 202 if the sync request was successfully enqueued.
-             * Returns HTTP code 422 (TBD) if the last sync was earlier than 24 hours ago.
-             */
-
-            throw new NotImplementedException();
+            var response = await this.HttpClient.PostAsync(this.Options.Helper.GetEndpointUrl($"characters/{lodestoneId}/refresh"), null, cancellationToken);
+            Debug.Assert(response.StatusCode is HttpStatusCode.Accepted or HttpStatusCode.UnprocessableEntity);
+            return response.StatusCode == HttpStatusCode.Accepted; //422 for false
         }
 
         public Task UpdateAsync(uint lodestoneId, CharacterUpdateModel updateModel, CancellationToken cancellationToken = default)
