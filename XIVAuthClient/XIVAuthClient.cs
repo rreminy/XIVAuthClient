@@ -1,4 +1,6 @@
 ﻿using System.Net.Http.Headers;
+using System.Reflection;
+using System.Web;
 
 namespace XIVAuth
 {
@@ -32,10 +34,61 @@ namespace XIVAuth
         /// <inheritdoc/>
         public IXIVAuthUserClient GetUser(AuthenticationHeaderValue? authentication) => new XIVAuthUserClient(this, this.HttpClientFactory(authentication));
 
+        /// <summary>Gets an authorization <see cref="Uri"/></summary>
+        /// <param name="clientId">Client ID</param>
+        /// <param name="redirectUri">Redirect Uri</param>
+        /// <param name="nonce">Nonce</param>
+        /// <param name="scopes">Scopes</param>
+        /// <returns>Authorization URI</returns>
+        public Uri GetAuthorizationUri(string clientId, Uri redirectUri, string nonce, IEnumerable<string> scopes)
+        {
+            return new($"{this.Options.OAuthUrl}authorize" +
+                $"?client_id={HttpUtility.UrlEncode(clientId)}" +
+                $"&redirect_uri={HttpUtility.UrlEncode(redirectUri.ToString())}" +
+                $"&scope={HttpUtility.UrlEncode(string.Join(' ', scopes))}" +
+                //$"&nonce={HttpUtility.UrlEncode(nonce)}" +
+                "&response_type=code");
+        }
+
+        /// <summary>Gets an authorization <see cref="Uri"/></summary>
+        /// <param name="clientId">Client ID</param>
+        /// <param name="redirectUri">Redirect Uri</param>
+        /// <param name="nonce">Nonce</param>
+        /// <param name="scopes">Scopes, can be space delimited instead of multiple arguments</param>
+        /// <returns>Authorization URI</returns>
+        public Uri GetAuthorizationUri(string clientId, Uri redirectUri, string nonce, params string[] scopes)
+        {
+            return this.GetAuthorizationUri(clientId, redirectUri, nonce, scopes.AsEnumerable());
+        }
+
+        /// <summary>Gets an authorization <see cref="Uri"/></summary>
+        /// <param name="clientId">Client ID</param>
+        /// <param name="redirectUri">Redirect Uri</param>
+        /// <param name="nonce">Nonce</param>
+        /// <param name="scopes">Scopes</param>
+        /// <returns>Authorization URI</returns>
+        public Uri GetAuthorizationUri(string clientId, Uri redirectUri, string nonce, IEnumerable<XIVAuthScope> scopes)
+        {
+            var scopes2 = scopes.Select(scope => typeof(XIVAuthScope).GetCustomAttribute<XIVAuthScopeIdAttribute>()?.ScopeId ?? throw new ArgumentException($"{nameof(scopes)} contains an invalid scope"));
+            return this.GetAuthorizationUri(clientId, redirectUri, nonce, scopes2);
+        }
+
+        /// <summary>Gets an authorization <see cref="Uri"/></summary>
+        /// <param name="clientId">Client ID</param>
+        /// <param name="redirectUri">Redirect Uri</param>
+        /// <param name="nonce">Nonce</param>
+        /// <param name="scopes">scope</param>
+        /// <returns>Authorization URI</returns>
+        public Uri GetAuthorizationUri(string clientId, Uri redirectUri, string nonce, XIVAuthScope[] scopes)
+        {
+            return this.GetAuthorizationUri(clientId, redirectUri, nonce, scopes.AsEnumerable());
+        }
+
         private HttpClient HttpClientFactory(AuthenticationHeaderValue? authentication)
         {
             var httpClient = new HttpClient(this.HttpHandler, false);
             httpClient.DefaultRequestHeaders.Authorization = authentication;
+            httpClient.DefaultRequestHeaders.Add("Accept", "*/*");
             return httpClient;
         }
 

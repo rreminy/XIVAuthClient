@@ -9,9 +9,13 @@ namespace XIVAuth
         public XIVAuthClientOptions()
         {
             this.Helper = new(this); // C# why can't I just do this assignment on the property declaration?
+            this.APIUrl = $"{this.BaseUrl}api/v1/";
+            this.OAuthUrl = $"{this.BaseUrl}oauth/";
         }
-        
+
         public static XIVAuthClientOptions Default { get; } = new();
-        public string APIUrl { get; init; } = "https://edge.xivauth.net/api/v1/";
+        public string BaseUrl { get; init; } = "https://edge.xivauth.net/";
+        public string APIUrl { get; init; }
+        public string OAuthUrl { get; init; }
     }
 }
