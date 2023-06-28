@@ -31,23 +31,23 @@ namespace XIVAuth
         }
 
         /// <inheritdoc/>
-        public Uri GetCodeAuthorizationUri(string clientId, Uri redirectUri, string nonce, params string[] scopes)
+        public Uri GetCodeAuthorizationUri(string clientId, Uri redirectUri, string state, params string[] scopes)
         {
-            return this.GetCodeAuthorizationUri(clientId, redirectUri, nonce, scopes.AsEnumerable());
+            return this.GetCodeAuthorizationUri(clientId, redirectUri, state, scopes.AsEnumerable());
         }
 
         /// <inheritdoc/>
-        public Uri GetCodeAuthorizationUri(string clientId, Uri redirectUri, string nonce, IEnumerable<XIVAuthScope> scopes)
+        public Uri GetCodeAuthorizationUri(string clientId, Uri redirectUri, string state, IEnumerable<XIVAuthScope> scopes)
         {
             var scopes2 = scopes.Select(scope => typeof(XIVAuthScope)
                 .GetCustomAttribute<XIVAuthScopeIdAttribute>()?.ScopeId ?? throw new ArgumentException($"{nameof(scopes)} contains an invalid scope: {scope}"));
-            return this.GetCodeAuthorizationUri(clientId, redirectUri, nonce, scopes2);
+            return this.GetCodeAuthorizationUri(clientId, redirectUri, state, scopes2);
         }
 
         /// <inheritdoc/>
-        public Uri GetCodeAuthorizationUri(string clientId, Uri redirectUri, string nonce, XIVAuthScope[] scopes)
+        public Uri GetCodeAuthorizationUri(string clientId, Uri redirectUri, string state, XIVAuthScope[] scopes)
         {
-            return this.GetCodeAuthorizationUri(clientId, redirectUri, nonce, scopes.AsEnumerable());
+            return this.GetCodeAuthorizationUri(clientId, redirectUri, state, scopes.AsEnumerable());
         }
     }
 }

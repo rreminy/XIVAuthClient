@@ -5,6 +5,7 @@ namespace XIVAuth
     public interface IXIVAuthClient : IDisposable
     {
         public XIVAuthClientOptions Options { get; }
+        public IXIVAuthFlowHelper Flows { get; }
 
         /// <summary>Get an <see cref="IXIVAuthUserClient"/> associated by a bearer token</summary>
         /// <param name="token">OAuth Bearer Token</param>
