@@ -37,16 +37,16 @@ namespace XIVAuth
         /// <summary>Gets an authorization <see cref="Uri"/></summary>
         /// <param name="clientId">Client ID</param>
         /// <param name="redirectUri">Redirect Uri</param>
-        /// <param name="nonce">Nonce</param>
+        /// <param name="state">Nonce</param>
         /// <param name="scopes">Scopes</param>
         /// <returns>Authorization URI</returns>
-        public Uri GetAuthorizationUri(string clientId, Uri redirectUri, string nonce, IEnumerable<string> scopes)
+        public Uri GetAuthorizationUri(string clientId, Uri redirectUri, string state, IEnumerable<string> scopes)
         {
             return new($"{this.Options.OAuthUrl}authorize" +
                 $"?client_id={HttpUtility.UrlEncode(clientId)}" +
                 $"&redirect_uri={HttpUtility.UrlEncode(redirectUri.ToString())}" +
                 $"&scope={HttpUtility.UrlEncode(string.Join(' ', scopes))}" +
-                //$"&nonce={HttpUtility.UrlEncode(nonce)}" +
+                $"&state={HttpUtility.UrlEncode(state)}" +
                 "&response_type=code");
         }
 
