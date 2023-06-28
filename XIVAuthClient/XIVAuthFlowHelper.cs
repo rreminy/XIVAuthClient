@@ -20,24 +20,24 @@ namespace XIVAuth
         }
 
         /// <inheritdoc/>
-        public Uri GetCodeAuthorizationUri(string clientId, Uri redirectUri, string state, IEnumerable<string> scopes)
+        public Uri GetCodeAuthorizationUri(string clientId, Uri redirectUri, string? state, IEnumerable<string> scopes)
         {
             return new($"{this.Options.OAuthUrl}authorize" +
                 $"?client_id={HttpUtility.UrlEncode(clientId)}" +
                 $"&redirect_uri={HttpUtility.UrlEncode(redirectUri.ToString())}" +
                 $"&scope={HttpUtility.UrlEncode(string.Join(' ', scopes))}" +
-                $"&state={HttpUtility.UrlEncode(state)}" +
+                (state is null ? string.Empty : $"&state={HttpUtility.UrlEncode(state)}") +
                 "&response_type=code");
         }
 
         /// <inheritdoc/>
-        public Uri GetCodeAuthorizationUri(string clientId, Uri redirectUri, string state, params string[] scopes)
+        public Uri GetCodeAuthorizationUri(string clientId, Uri redirectUri, string? state, params string[] scopes)
         {
             return this.GetCodeAuthorizationUri(clientId, redirectUri, state, scopes.AsEnumerable());
         }
 
         /// <inheritdoc/>
-        public Uri GetCodeAuthorizationUri(string clientId, Uri redirectUri, string state, IEnumerable<XIVAuthScope> scopes)
+        public Uri GetCodeAuthorizationUri(string clientId, Uri redirectUri, string? state, IEnumerable<XIVAuthScope> scopes)
         {
             var scopes2 = scopes.Select(scope => typeof(XIVAuthScope)
                 .GetCustomAttribute<XIVAuthScopeIdAttribute>()?.ScopeId ?? throw new ArgumentException($"{nameof(scopes)} contains an invalid scope: {scope}"));
@@ -45,7 +45,7 @@ namespace XIVAuth
         }
 
         /// <inheritdoc/>
-        public Uri GetCodeAuthorizationUri(string clientId, Uri redirectUri, string state, XIVAuthScope[] scopes)
+        public Uri GetCodeAuthorizationUri(string clientId, Uri redirectUri, string? state, XIVAuthScope[] scopes)
         {
             return this.GetCodeAuthorizationUri(clientId, redirectUri, state, scopes.AsEnumerable());
         }

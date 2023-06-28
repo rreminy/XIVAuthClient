@@ -13,33 +13,33 @@ namespace XIVAuth
         /// <summary>Gets an authorization <see cref="Uri"/></summary>
         /// <param name="clientId">Client ID</param>
         /// <param name="redirectUri">Redirect Uri</param>
-        /// <param name="state">Nonce</param>
+        /// <param name="state">Opaque value</param>
         /// <param name="scopes">Scopes</param>
         /// <returns>Authorization URI</returns>
-        public Uri GetCodeAuthorizationUri(string clientId, Uri redirectUri, string state, IEnumerable<string> scopes);
+        public Uri GetCodeAuthorizationUri(string clientId, Uri redirectUri, string? state, IEnumerable<string> scopes);
 
         /// <summary>Gets an authorization <see cref="Uri"/></summary>
         /// <param name="clientId">Client ID</param>
         /// <param name="redirectUri">Redirect Uri</param>
-        /// <param name="state">Nonce</param>
+        /// <param name="state">Opaque value</param>
         /// <param name="scopes">Scopes, can be space delimited instead of multiple arguments</param>
         /// <returns>Authorization URI</returns>
-        public Uri GetCodeAuthorizationUri(string clientId, Uri redirectUri, string state, params string[] scopes);
+        public Uri GetCodeAuthorizationUri(string clientId, Uri redirectUri, string? state, params string[] scopes);
 
         /// <summary>Gets an authorization <see cref="Uri"/></summary>
         /// <param name="clientId">Client ID</param>
         /// <param name="redirectUri">Redirect Uri</param>
-        /// <param name="state">Nonce</param>
+        /// <param name="state">Opaque value</param>
         /// <param name="scopes">Scopes</param>
         /// <returns>Authorization URI</returns>
-        public Uri GetCodeAuthorizationUri(string clientId, Uri redirectUri, string state, IEnumerable<XIVAuthScope> scopes);
+        public Uri GetCodeAuthorizationUri(string clientId, Uri redirectUri, string? state, IEnumerable<XIVAuthScope> scopes);
 
         /// <summary>Gets an authorization <see cref="Uri"/></summary>
         /// <param name="clientId">Client ID</param>
         /// <param name="redirectUri">Redirect Uri</param>
-        /// <param name="state">Nonce</param>
+        /// <param name="state">Opaque value</param>
         /// <param name="scopes">scope</param>
         /// <returns>Authorization URI</returns>
-        public Uri GetCodeAuthorizationUri(string clientId, Uri redirectUri, string state, XIVAuthScope[] scopes);
+        public Uri GetCodeAuthorizationUri(string clientId, Uri redirectUri, string? state, XIVAuthScope[] scopes);
     }
 }
