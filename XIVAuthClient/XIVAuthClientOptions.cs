@@ -14,7 +14,7 @@ namespace XIVAuth
         }
 
         public static XIVAuthClientOptions Default { get; } = new();
-        public string BaseUrl { get; init; } = "https://edge.xivauth.net/";
+        public string BaseUrl { get; init; } = "https://edge.xivauth.net/"; // TODO: Change before production release
         public string APIUrl { get; init; }
         public string OAuthUrl { get; init; }
     }

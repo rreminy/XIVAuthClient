@@ -8,6 +8,7 @@ namespace XIVAuth
     {
         private readonly bool _ownHandler;
         public XIVAuthClientOptions Options { get; }
+        public IXIVAuthFlowHelper Flows { get; }
         private HttpMessageHandler HttpHandler { get; }
 
         /// <summary>Construct an <see cref="XIVAuthClient"/> with default <see cref="XIVAuthClientOptions"/></summary>
@@ -24,6 +25,7 @@ namespace XIVAuth
         public XIVAuthClient(XIVAuthClientOptions options, HttpMessageHandler httpHandler, bool ownHandler = true)
         {
             this.Options = options;
+            this.Flows = new XIVAuthFlowHelper(this);
             this.HttpHandler = httpHandler;
             this._ownHandler = ownHandler;
         }
@@ -33,56 +35,6 @@ namespace XIVAuth
 
         /// <inheritdoc/>
         public IXIVAuthUserClient GetUser(AuthenticationHeaderValue? authentication) => new XIVAuthUserClient(this, this.HttpClientFactory(authentication));
-
-        /// <summary>Gets an authorization <see cref="Uri"/></summary>
-        /// <param name="clientId">Client ID</param>
-        /// <param name="redirectUri">Redirect Uri</param>
-        /// <param name="state">Nonce</param>
-        /// <param name="scopes">Scopes</param>
-        /// <returns>Authorization URI</returns>
-        public Uri GetAuthorizationUri(string clientId, Uri redirectUri, string state, IEnumerable<string> scopes)
-        {
-            return new($"{this.Options.OAuthUrl}authorize" +
-                $"?client_id={HttpUtility.UrlEncode(clientId)}" +
-                $"&redirect_uri={HttpUtility.UrlEncode(redirectUri.ToString())}" +
-                $"&scope={HttpUtility.UrlEncode(string.Join(' ', scopes))}" +
-                $"&state={HttpUtility.UrlEncode(state)}" +
-                "&response_type=code");
-        }
-
-        /// <summary>Gets an authorization <see cref="Uri"/></summary>
-        /// <param name="clientId">Client ID</param>
-        /// <param name="redirectUri">Redirect Uri</param>
-        /// <param name="nonce">Nonce</param>
-        /// <param name="scopes">Scopes, can be space delimited instead of multiple arguments</param>
-        /// <returns>Authorization URI</returns>
-        public Uri GetAuthorizationUri(string clientId, Uri redirectUri, string nonce, params string[] scopes)
-        {
-            return this.GetAuthorizationUri(clientId, redirectUri, nonce, scopes.AsEnumerable());
-        }
-
-        /// <summary>Gets an authorization <see cref="Uri"/></summary>
-        /// <param name="clientId">Client ID</param>
-        /// <param name="redirectUri">Redirect Uri</param>
-        /// <param name="nonce">Nonce</param>
-        /// <param name="scopes">Scopes</param>
-        /// <returns>Authorization URI</returns>
-        public Uri GetAuthorizationUri(string clientId, Uri redirectUri, string nonce, IEnumerable<XIVAuthScope> scopes)
-        {
-            var scopes2 = scopes.Select(scope => typeof(XIVAuthScope).GetCustomAttribute<XIVAuthScopeIdAttribute>()?.ScopeId ?? throw new ArgumentException($"{nameof(scopes)} contains an invalid scope"));
-            return this.GetAuthorizationUri(clientId, redirectUri, nonce, scopes2);
-        }
-
-        /// <summary>Gets an authorization <see cref="Uri"/></summary>
-        /// <param name="clientId">Client ID</param>
-        /// <param name="redirectUri">Redirect Uri</param>
-        /// <param name="nonce">Nonce</param>
-        /// <param name="scopes">scope</param>
-        /// <returns>Authorization URI</returns>
-        public Uri GetAuthorizationUri(string clientId, Uri redirectUri, string nonce, XIVAuthScope[] scopes)
-        {
-            return this.GetAuthorizationUri(clientId, redirectUri, nonce, scopes.AsEnumerable());
-        }
 
         private HttpClient HttpClientFactory(AuthenticationHeaderValue? authentication)
         {
