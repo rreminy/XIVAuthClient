@@ -25,9 +25,9 @@ namespace XIVAuth
         public XIVAuthClient(XIVAuthClientOptions options, HttpMessageHandler httpHandler, bool ownHandler = true)
         {
             this.Options = options;
-            this.Flows = new XIVAuthFlowHelper(this);
             this.HttpHandler = httpHandler;
             this._ownHandler = ownHandler;
+            this.Flows = new XIVAuthFlowHelper(this, new(this.HttpHandler, false));
         }
 
         /// <inheritdoc/>

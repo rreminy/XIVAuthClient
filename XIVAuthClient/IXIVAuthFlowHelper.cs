@@ -1,4 +1,6 @@
-﻿namespace XIVAuth
+﻿using XIVAuth.Models;
+
+namespace XIVAuth
 {
     public interface IXIVAuthFlowHelper
     {
@@ -38,8 +40,9 @@
         /// <param name="clientId">Client ID</param>
         /// <param name="clientSecret">Client Secret</param>
         /// <param name="code">Authorization Code</param>
-        /// <param name="redirectUri"></param>
+        /// <param name="redirectUri">Redirect URI</param>
+        /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Bearer Token</returns>
-        public Task<string> GetTokenAsync(string clientId, string clientSecret, string code, Uri redirectUri);
+        public Task<TokenInformation> GetTokenAsync(string clientId, string clientSecret, string code, Uri? redirectUri = null, CancellationToken cancellationToken = default);
     }
 }

@@ -17,14 +17,14 @@ namespace XIVAuth.Internal
 
         public async Task SendRequestAsync(HttpClient httpClient, HttpMethod method, string endpoint, HttpContent? content, CancellationToken cancellationToken = default)
         {
-            using var response = await this.SendRequestCoreAsync(httpClient, method, endpoint, content, cancellationToken);
+            using var response = await this.SendRequestCoreAsync(httpClient, method, endpoint, content, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<T> SendRequestAsync<T>(HttpClient httpClient, HttpMethod method, string endpoint, HttpContent? content, CancellationToken cancellationToken = default)
         {
-            using var response = await this.SendRequestCoreAsync(httpClient, method, endpoint, content, cancellationToken);
+            using var response = await this.SendRequestCoreAsync(httpClient, method, endpoint, content, cancellationToken).ConfigureAwait(false);
             await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
-            return await JsonSerializer.DeserializeAsync<T>(stream, cancellationToken: cancellationToken) ?? throw new JsonException();
+            return (await JsonSerializer.DeserializeAsync<T>(stream, cancellationToken: cancellationToken).ConfigureAwait(false)) ?? throw new JsonException();
         }
 
         private async Task<HttpResponseMessage> SendRequestCoreAsync(HttpClient httpClient, HttpMethod method, string endpoint, HttpContent? content, CancellationToken cancellationToken = default)
@@ -46,7 +46,7 @@ namespace XIVAuth.Internal
                 try
                 {
                     await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
-                    var errors = await JsonSerializer.DeserializeAsync<ErrorModel>(stream, cancellationToken: cancellationToken);
+                    var errors = await JsonSerializer.DeserializeAsync<ErrorModel>(stream, cancellationToken: cancellationToken).ConfigureAwait(false);
                     throw new XIVAuthException(errors?.Errors, ex);
                 }
                 catch (Exception modelException)

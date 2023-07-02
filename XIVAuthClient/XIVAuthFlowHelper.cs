@@ -1,22 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Net.Http.Json;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Web;
+using XIVAuth.Models;
 
 namespace XIVAuth
 {
     internal sealed class XIVAuthFlowHelper : IXIVAuthFlowHelper
     {
         private IXIVAuthClient Client { get; }
+        private HttpClient HttpClient { get; }
         private XIVAuthClientOptions Options => this.Client.Options;
 
-        internal XIVAuthFlowHelper(IXIVAuthClient client)
+        internal XIVAuthFlowHelper(IXIVAuthClient client, HttpClient httpClient)
         {
             this.Client = client;
+            this.HttpClient = httpClient;
         }
 
         /// <inheritdoc/>
@@ -50,9 +56,23 @@ namespace XIVAuth
             return this.GetCodeAuthorizationUri(clientId, redirectUri, state, scopes.AsEnumerable());
         }
 
-        public Task<string> GetTokenAsync(string clientId, string clientSecret, string code, Uri redirectUri)
+        public async Task<TokenInformation> GetTokenAsync(string clientId, string clientSecret, string code, Uri? redirectUri = null, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            var requestJson = new Dictionary<string, string>()
+            {
+                {"grant_type", "authorization_code" },
+                {"client_id", clientId },
+                {"client_secret", clientSecret },
+                {"code", code },
+            };
+            if (redirectUri is not null) requestJson["redirect_uri"] = redirectUri.ToString();
+            using var response = await this.HttpClient.PostAsJsonAsync($"{this.Options.OAuthUrl}token", requestJson, cancellationToken).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+
+            await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+            var tokenInfo = await JsonSerializer.DeserializeAsync<TokenInformation>(stream, cancellationToken: cancellationToken).ConfigureAwait(false);
+            Debug.Assert(tokenInfo is not null);
+            return tokenInfo;
         }
     }
 }
