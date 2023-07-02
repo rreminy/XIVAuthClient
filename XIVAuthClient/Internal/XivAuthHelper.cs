@@ -62,54 +62,5 @@ namespace XIVAuth.Internal
                 }
             }
         }
-
-
-        [Obsolete($"Use {nameof(SendRequestAsync)} instead", error: true)]
-        public async Task<T> PerformGetAsync<T>(HttpClient httpClient, string endpoint, CancellationToken cancellationToken = default)
-        {
-            var response = await httpClient.GetAsync(this.GetEndpointUrl(endpoint), cancellationToken);
-            response.EnsureSuccessStatusCode();
-            using var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
-            return await JsonSerializer.DeserializeAsync<T>(stream, cancellationToken: cancellationToken) ?? throw new JsonException();
-        }
-
-        [Obsolete($"Use {nameof(SendRequestAsync)} instead", error: true)]
-        public async Task PerformGetAsync(HttpClient httpClient, string endpoint, CancellationToken cancellationToken = default)
-        {
-            var response = await httpClient.GetAsync(this.GetEndpointUrl(endpoint), cancellationToken);
-            response.EnsureSuccessStatusCode();
-        }
-
-        [Obsolete($"Use {nameof(SendRequestAsync)} instead", error: true)]
-        public async Task<T> PerformPostAsync<T>(HttpClient httpClient, string endpoint, CancellationToken cancellationToken = default)
-        {
-            var response = await httpClient.PostAsync(this.GetEndpointUrl(endpoint), null, cancellationToken);
-            response.EnsureSuccessStatusCode();
-            using var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
-            return await JsonSerializer.DeserializeAsync<T>(stream, cancellationToken: cancellationToken) ?? throw new JsonException();
-        }
-
-        [Obsolete($"Use {nameof(SendRequestAsync)} instead", error: true)]
-        public async Task<T> PerformPostAsync<T>(HttpClient httpClient, HttpContent? content, string endpoint, CancellationToken cancellationToken = default)
-        {
-            var response = await httpClient.PostAsync(this.GetEndpointUrl(endpoint), content, cancellationToken);
-            response.EnsureSuccessStatusCode();
-            using var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
-            return await JsonSerializer.DeserializeAsync<T>(stream, cancellationToken: cancellationToken) ?? throw new JsonException();
-        }
-
-        [Obsolete($"Use {nameof(SendRequestAsync)} instead", error: true)]
-        public async Task PerformPostAsync(HttpClient httpClient, string endpoint, CancellationToken cancellationToken = default)
-        {
-            var response = await httpClient.PostAsync(this.GetEndpointUrl(endpoint), null, cancellationToken);
-            response.EnsureSuccessStatusCode();
-        }
-
-        [Obsolete($"Use {nameof(SendRequestAsync)} instead", error: true)]
-        public async Task PerformPostAsync(HttpClient httpClient, HttpContent? content, string endpoint, CancellationToken cancellationToken = default)
-        {
-            var response = await httpClient.PostAsync(this.GetEndpointUrl(endpoint), content, cancellationToken);
-            response.EnsureSuccessStatusCode();
-        }
     }
 }
