@@ -6,7 +6,7 @@ namespace XIVAuth.Models
     {
         [JsonPropertyName("lodestone_id")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-        public uint? LodestoneId { get; init; }
+        public string? LodestoneId { get; init; }
 
         [JsonPropertyName("name")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]

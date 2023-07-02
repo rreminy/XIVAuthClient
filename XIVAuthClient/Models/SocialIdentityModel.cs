@@ -18,5 +18,7 @@ namespace XIVAuth.Models
 
         [JsonPropertyName("email")]
         public string? Email { get; init; }
+
+        public override string ToString() => $"{this.Provider}: {this.ExternalId}";
     }
 }

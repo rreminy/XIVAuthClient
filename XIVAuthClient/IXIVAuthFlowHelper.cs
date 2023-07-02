@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
-
-namespace XIVAuth
+﻿namespace XIVAuth
 {
     public interface IXIVAuthFlowHelper
     {
@@ -41,5 +33,13 @@ namespace XIVAuth
         /// <param name="scopes">scope</param>
         /// <returns>Authorization URI</returns>
         public Uri GetCodeAuthorizationUri(string clientId, Uri redirectUri, string? state, XIVAuthScope[] scopes);
+
+        /// <summary>Gets a bearer token</summary>
+        /// <param name="clientId">Client ID</param>
+        /// <param name="clientSecret">Client Secret</param>
+        /// <param name="code">Authorization Code</param>
+        /// <param name="redirectUri"></param>
+        /// <returns>Bearer Token</returns>
+        public Task<string> GetTokenAsync(string clientId, string clientSecret, string code, Uri redirectUri);
     }
 }

@@ -1,4 +1,5 @@
-﻿using XIVAuth.Models;
+﻿using XIVAuth.Internal;
+using XIVAuth.Models;
 
 namespace XIVAuth.API
 {
@@ -7,6 +8,7 @@ namespace XIVAuth.API
         private IXIVAuthUserClient UserClient { get; }
         private HttpClient HttpClient { get; }
         private XIVAuthClientOptions Options => this.UserClient.Options;
+        private XivAuthHelper Helper => this.Options.Helper;
 
         public UserAPI(IXIVAuthUserClient userClient, HttpClient httpClient)
         {
@@ -16,7 +18,7 @@ namespace XIVAuth.API
 
         public Task<UserModel> GetAsync(CancellationToken cancellationToken = default)
         {
-            return this.Options.Helper.PerformGetAsync<UserModel>(this.HttpClient, "user", cancellationToken);
+            return this.Helper.SendRequestAsync<UserModel>(this.HttpClient, HttpMethod.Get, "user", null, cancellationToken);
         }
     }
 }

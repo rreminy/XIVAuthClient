@@ -21,5 +21,7 @@ namespace XIVAuth.Models
 
         [JsonPropertyName("verified_characters")]
         public required bool VerifiedCharacters { get; init; } // HasVerifiedCharacters?
+
+        public override string ToString() => $"{this.Id}";
     }
 }

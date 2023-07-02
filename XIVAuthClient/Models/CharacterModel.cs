@@ -36,5 +36,7 @@ namespace XIVAuth.Models
 
         [JsonIgnore]
         public bool Verified => this.VerifiedAt is not null; // Take advantage of the nil
+
+        public override string ToString() => $"{this.Name} <{this.HomeWorld}>";
     }
 }

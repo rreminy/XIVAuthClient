@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Net;
 using System.Net.Http.Json;
+using XIVAuth.Internal;
 using XIVAuth.Models;
 
 namespace XIVAuth.API
@@ -10,6 +11,7 @@ namespace XIVAuth.API
         private IXIVAuthUserClient UserClient { get; }
         private HttpClient HttpClient { get; }
         private XIVAuthClientOptions Options => this.UserClient.Options;
+        private XivAuthHelper Helper => this.Options.Helper;
 
         public CharactersAPI(IXIVAuthUserClient userClient, HttpClient httpClient)
         {
@@ -17,63 +19,49 @@ namespace XIVAuth.API
             this.HttpClient = httpClient;
         }
 
-        public Task<CharacterModel> GetAsync(uint lodestoneId, CancellationToken cancellationToken = default)
+        public Task<CharacterModel> GetAsync(string lodestoneId, CancellationToken cancellationToken = default)
         {
-            return this.Options.Helper.PerformGetAsync<CharacterModel>(this.HttpClient, $"characters/{lodestoneId}", cancellationToken);
+            return this.Helper.SendRequestAsync<CharacterModel>(this.HttpClient, HttpMethod.Get, $"characters/{lodestoneId}", null, cancellationToken);
         }
 
         public Task<IEnumerable<CharacterModel>> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            return this.Options.Helper.PerformGetAsync<IEnumerable<CharacterModel>>(this.HttpClient, $"characters", cancellationToken);
+            return this.Helper.SendRequestAsync<IEnumerable<CharacterModel>>(this.HttpClient, HttpMethod.Get, "characters", null, cancellationToken);
         }
 
-        public Task RegisterAsync(uint lodestoneId, CancellationToken cancellationToken = default)
+        public Task<CharacterModel> RegisterAsync(string lodestoneId, CancellationToken cancellationToken = default)
         {
             return this.RegisterAsyncCore(new() { LodestoneId = lodestoneId }, cancellationToken);
         }
 
-        public Task RegisterAsync(string name, string world, CancellationToken cancellationToken = default)
+        public Task<CharacterModel> RegisterAsync(string name, string world, CancellationToken cancellationToken = default)
         {
             return this.RegisterAsyncCore(new() { Name = name, World = world }, cancellationToken);
         }
 
-        private async Task RegisterAsyncCore(CharacterRegistrationModel registration, CancellationToken cancellationToken = default)
+        private Task<CharacterModel> RegisterAsyncCore(CharacterRegistrationModel registration, CancellationToken cancellationToken = default)
         {
-            var response = await this.HttpClient.PostAsync(this.Options.Helper.GetEndpointUrl($"characters"), JsonContent.Create(registration), cancellationToken);
-            Debug.Assert(response.StatusCode is HttpStatusCode.NoContent or HttpStatusCode.UnprocessableEntity);
-            if (response.StatusCode is HttpStatusCode.UnprocessableEntity)
-            {
-                // TODO: Error handling not implemented: Error list
-                response.EnsureSuccessStatusCode(); // Assert: This will throw
-            }
+            return this.Helper.SendRequestAsync<CharacterModel>(this.HttpClient, HttpMethod.Post, "characters", JsonContent.Create(registration), cancellationToken);
         }
 
-        public async Task<bool> RefreshAsync(uint lodestoneId, CancellationToken cancellationToken = default)
+        public Task UnregisterAsync(string lodestoneId, CancellationToken cancellationToken = default)
+        {
+            return this.Helper.SendRequestAsync(this.HttpClient, HttpMethod.Delete, $"characters/{lodestoneId}", null, cancellationToken);
+        }
+
+        public async Task<bool> RefreshAsync(string lodestoneId, CancellationToken cancellationToken = default)
         {
             var response = await this.HttpClient.PostAsync(this.Options.Helper.GetEndpointUrl($"characters/{lodestoneId}/refresh"), null, cancellationToken);
             Debug.Assert(response.StatusCode is HttpStatusCode.Accepted or HttpStatusCode.UnprocessableEntity);
             return response.StatusCode == HttpStatusCode.Accepted; //422 for false
         }
 
-        public Task UpdateAsync(uint lodestoneId, CharacterUpdateModel updateModel, CancellationToken cancellationToken = default)
+        public Task UpdateAsync<CharacterModel>(string lodestoneId, CharacterUpdateModel updateModel, CancellationToken cancellationToken = default)
         {
-            // TODO: PUT|PATCH /characters/{lodestone_id}
-            /*
-             * Scopes required: character:manage
-             * 
-             * This API route allows updating a specific character’s entry. It takes a body consisting of
-             * a JSON object with the fields to update:
-             * {
-             *   "content_id": "1234567890123"
-             * }
-             * Only the following fields can be edited: content_id
-             */
-
-            // TODO: What does this return?
-            throw new NotImplementedException();
+            return this.Helper.SendRequestAsync<CharacterModel>(this.HttpClient, HttpMethod.Patch, $"characters/{lodestoneId}", JsonContent.Create(updateModel), cancellationToken);
         }
 
-        public Task VerifyAsync(uint lodestoneId, CancellationToken cancellationToken = default)
+        public Task VerifyAsync(string lodestoneId, CancellationToken cancellationToken = default)
         {
             // TODO: POST /characters/{lodestone_id}/verify
             // Status code 202 => return
@@ -92,16 +80,6 @@ namespace XIVAuth.API
              */
 
             throw new NotImplementedException();
-        }
-
-        public Task UnverifyAsync(uint lodestoneId, CancellationToken cancellationToken = default)
-        {
-            // TODO: DELETE /characters/{lodestone_id}/verify
-            // Do we really want this?
-
-            // TODO: What does this return...
-
-            throw new NotImplementedException($"Banned reason: VIP - Executing the {nameof(UnverifyAsync)} method");
         }
     }
 }

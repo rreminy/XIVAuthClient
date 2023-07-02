@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace XIVAuth
+﻿namespace XIVAuth
 {
     /// <summary>XIVAuth Scopes</summary>
     public enum XIVAuthScope
@@ -45,7 +39,7 @@ namespace XIVAuth
         [XIVAuthScopeId("character:manage")]
         ManageCharacters,
 
-        /// <summary>Allow Persistent Access</summary>
+        /// <summary>Get a refresh token for persistent access</summary>
         [XIVAuthScopeId("refresh")]
         Refresh,
     }

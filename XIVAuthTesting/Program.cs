@@ -76,7 +76,7 @@ namespace XIVAuth.Testing
 
             Console.WriteLine();
 
-            var authUri = xivAuthClient.GetAuthorizationUri(clientInfo.ClientId, new("http://localhost:18080/callback"), new Random().Next(10000).ToString(), clientInfo.Scopes.AsEnumerable());
+            var authUri = xivAuthClient.Flows.GetCodeAuthorizationUri(clientInfo.ClientId, new("http://localhost:18080/callback"), new Random().Next(10000).ToString(), clientInfo.Scopes.AsEnumerable());
 
             Console.WriteLine($"Opening {authUri}");
             Process.Start(new ProcessStartInfo(authUri.ToString()) { UseShellExecute = true });
@@ -98,7 +98,7 @@ namespace XIVAuth.Testing
                 var errorDescription = context.Request.QueryString["error_description"];
                 Console.WriteLine($"Error details: {error} ({errorDescription})");
             }
-            context.Response.Close(Encoding.UTF8.GetBytes("Received"), true);
+            context.Response.Close(Encoding.UTF8.GetBytes("<html><head><title>XIVAuth Callback Received</title></head><body><h1>XIVAuth Callback Received</h1><p>You may close this window</p><script>close()</script></body></html>"), true);
 
 
             var tokenUri = $"{xivAuthClient.Options.OAuthUrl}token";
@@ -112,7 +112,7 @@ namespace XIVAuth.Testing
 
             var xivUser = xivAuthClient.GetUser(responseJson["access_token"].ToString());
             var characters = await xivUser.Characters.GetAllAsync();
-            Console.WriteLine(characters.Select(c => c.Name));
+            Console.WriteLine(string.Join('\n', characters.Select(ModelUtils.GetDetailedString)));
 
         }
 

@@ -9,7 +9,7 @@ namespace XIVAuth.API
         /// <param name="token">Cancellation token</param>
         /// <returns><see cref="CharacterModel"/></returns>
         /// <remarks>Minimum required scope: character</remarks>
-        public Task<CharacterModel> GetAsync(uint lodestoneId, CancellationToken cancellationToken = default);
+        public Task<CharacterModel> GetAsync(string lodestoneId, CancellationToken cancellationToken = default);
 
         /// <summary>Gets all characters</summary>
         /// <param name="token">Cancellation token</param>
@@ -20,15 +20,21 @@ namespace XIVAuth.API
         /// <summary>Register a character</summary>
         /// <param name="lodestoneId">Lodestone ID</param>
         /// <param name="cancellationToken">Cancellation Token</param>
-        /// <returns>Task representing registration API call progress</returns>
-        public Task RegisterAsync(uint lodestoneId, CancellationToken cancellationToken = default);
+        /// <returns><see cref="CharacterModel"/> or the registered character</returns>
+        public Task<CharacterModel> RegisterAsync(string lodestoneId, CancellationToken cancellationToken = default);
 
         /// <summary>Register a character</summary>
         /// <param name="name">Character name</param>
         /// <param name="world">Character world</param>
         /// <param name="cancellationToken">Cancellation Token</param>
-        /// <returns>Task representing registration API call progress</returns>
-        public Task RegisterAsync(string name, string world, CancellationToken cancellationToken = default);
+        /// <returns><see cref="CharacterModel"/> or the registered character</returns>
+        public Task<CharacterModel> RegisterAsync(string name, string world, CancellationToken cancellationToken = default);
+
+        /// <summary>Unregister a character</summary>
+        /// <param name="lodestoneId">Lodestone ID</param>
+        /// <param name="cancellationToken">Cancellation Token</param>
+        /// <returns>Task representing</returns>
+        public Task UnregisterAsync(string lodestoneId, CancellationToken cancellationToken = default);
 
         /// <summary>Refresh character information</summary>
         /// <param name="lodestoneId">Lodestone ID</param>
@@ -38,14 +44,14 @@ namespace XIVAuth.API
         /// Character information can be refreshed once every 24 hours.
         /// It may also be refreshed by other systems.
         /// </remarks>
-        public Task<bool> RefreshAsync(uint lodestoneId, CancellationToken cancellationToken = default);
+        public Task<bool> RefreshAsync(string lodestoneId, CancellationToken cancellationToken = default);
 
         /// <summary>Upddata character information</summary>
         /// <param name="lodestoneId">Lodestone ID</param>
         /// <param name="updateModel">Information to update</param>
         /// <param name="cancellationToken">Cancellation token</param>
-        /// <returns>Task representing API call progress</returns>
-        public Task UpdateAsync(uint lodestoneId, CharacterUpdateModel updateModel, CancellationToken cancellationToken = default);
+        /// <returns>Updated character information</returns>
+        public Task UpdateAsync<CharacterModel>(string lodestoneId, CharacterUpdateModel updateModel, CancellationToken cancellationToken = default);
 
         /// <summary>Enqueue an attempt at character verification</summary>
         /// <param name="lodestoneId">Lodestone ID</param>
@@ -56,13 +62,6 @@ namespace XIVAuth.API
         /// <para>In the future this will return a task ID you can use to track its progress.</para>
         /// <para>Verification can be considered failed after 300 seconds have elapsed</para>
         /// </remarks>
-        public Task VerifyAsync(uint lodestoneId, CancellationToken cancellationToken = default);
-
-        /// <summary>Removes a character verification</summary>
-        /// <param name="lodestoneId">Lodestone ID</param>
-        /// <param name="cancellationToken">Cancellation token</param>
-        /// <returns>Task representing API call progress</returns>
-        /// <remarks>Only supported on staging and development environments</remarks>
-        public Task UnverifyAsync(uint lodestoneId, CancellationToken cancellationToken = default);
+        public Task VerifyAsync(string lodestoneId, CancellationToken cancellationToken = default);
     }
 }

@@ -49,5 +49,10 @@ namespace XIVAuth
         {
             return this.GetCodeAuthorizationUri(clientId, redirectUri, state, scopes.AsEnumerable());
         }
+
+        public Task<string> GetTokenAsync(string clientId, string clientSecret, string code, Uri redirectUri)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

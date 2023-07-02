@@ -6,6 +6,6 @@ namespace XIVAuth.Models
     {
         [JsonPropertyName("content_id")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-        public ulong? ContentId { get; init; }
+        public string? ContentId { get; init; }
     }
 }
