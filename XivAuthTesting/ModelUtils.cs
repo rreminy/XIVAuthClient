@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using XivAuth.Models;
 
-namespace XivAuth
+namespace XivAuth.Testing
 {
     public static class ModelUtils
     {

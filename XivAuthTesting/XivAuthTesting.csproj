@@ -5,7 +5,7 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <RootNamespace>XIVAuth</RootNamespace>
+    <RootNamespace>XivAuth.Testing</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
