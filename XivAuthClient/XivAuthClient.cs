@@ -1,6 +1,4 @@
 ﻿using System.Net.Http.Headers;
-using System.Reflection;
-using System.Web;
 
 namespace XivAuth
 {
@@ -40,7 +38,7 @@ namespace XivAuth
         {
             var httpClient = new HttpClient(this.HttpHandler, false);
             httpClient.DefaultRequestHeaders.Authorization = authentication;
-            httpClient.DefaultRequestHeaders.Add("Accept", "*/*");
+            httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
             return httpClient;
         }
 

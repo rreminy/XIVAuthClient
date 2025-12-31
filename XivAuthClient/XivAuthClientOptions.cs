@@ -40,6 +40,7 @@ namespace XivAuth
         /// <summary>XIVAuth OAuth URL.</summary>
         public string OAuthUrl { get; init; }
 
+        /// <inheritdoc/>
         public override string ToString() => $"{this.BaseUrl} (API: {this.ApiUrl} | OAuth: {this.OAuthUrl})";
     }
 }
