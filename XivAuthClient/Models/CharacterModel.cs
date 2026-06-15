@@ -4,12 +4,12 @@ using System.Text.Json.Serialization;
 namespace XivAuth.Models
 {
     /// <summary>Represents a Character registration.</summary>
-    public sealed class CharacterModel : IModel
+    public sealed class CharacterModel : IRecord
     {
         /// <summary>Internal ID for this character’s binding to the user. Will change if the character is removed from the user’s account.</summary>
         /// <remarks>
         /// <list type="bullet">
-        /// <item>Required Scope: <c>character</c></item>
+        /// <item>Required Scope: <c>character</c>.</item>
         /// </list>
         /// </remarks>
         [EditorBrowsable(EditorBrowsableState.Advanced)]
@@ -19,7 +19,7 @@ namespace XivAuth.Models
         /// <summary>Internal ID for the globally-tracked character. Persistent across users, but may change if the character has been fully deleted from the XIVAuth database.</summary>
         /// <remarks>
         /// <list type="bullet">
-        /// <item>Required Scope: <c>character</c></item>
+        /// <item>Required Scope: <c>character</c>.</item>
         /// </list>
         /// </remarks>
         [EditorBrowsable(EditorBrowsableState.Advanced)]
@@ -29,7 +29,7 @@ namespace XivAuth.Models
         /// <summary>An opaque value representing this character/user combination. Guaranteed to remain consistent so long as the character is associated with the same user, even if the character is removed and re-added.</summary>
         /// <remarks>
         /// <list type="bullet">
-        /// <item>Required Scope: <c>character</c></item>
+        /// <item>Required Scope: <c>character</c>.</item>
         /// </list>
         /// </remarks>
         [JsonPropertyName("persistent_key")]
@@ -38,7 +38,7 @@ namespace XivAuth.Models
         /// <summary>The ID of this character on FFXIV’s Lodestone service.</summary>
         /// <remarks>
         /// <list type="bullet">
-        /// <item>Required Scope: <c>character</c></item>
+        /// <item>Required Scope: <c>character</c>.</item>
         /// </list>
         /// </remarks>
         [JsonPropertyName("lodestone_id")]
@@ -47,7 +47,7 @@ namespace XivAuth.Models
         /// <summary>The last seen/reported name for this character according to Lodestone.</summary>
         /// <remarks>
         /// <list type="bullet">
-        /// <item>Required Scope: <c>character</c></item>
+        /// <item>Required Scope: <c>character</c>.</item>
         /// </list>
         /// </remarks>
         [JsonPropertyName("name")]
@@ -56,7 +56,7 @@ namespace XivAuth.Models
         /// <summary>The (English) name of this character’s home world according to Lodestone.</summary>
         /// <remarks>
         /// <list type="bullet">
-        /// <item>Required Scope: <c>character</c></item>
+        /// <item>Required Scope: <c>character</c>.</item>
         /// </list>
         /// </remarks>
         [JsonPropertyName("home_world")]
@@ -65,7 +65,7 @@ namespace XivAuth.Models
         /// <summary>The (English) name of this character’s data center according to Lodestone.</summary>
         /// <remarks>
         /// <list type="bullet">
-        /// <item>Required Scope: <c>character</c></item>
+        /// <item>Required Scope: <c>character</c>.</item>
         /// </list>
         /// </remarks>
         [JsonPropertyName("data_center")]
@@ -83,7 +83,7 @@ namespace XivAuth.Models
         /// <summary>An avatar/headshot image for this character. May return either a Lodestone URL or a CDN URL.</summary>
         /// <remarks>
         /// <list type="bullet">
-        /// <item>Required Scope: <c>character</c></item>
+        /// <item>Required Scope: <c>character</c>.</item>
         /// </list>
         /// </remarks>
         [JsonPropertyName("avatar_url")]
@@ -92,7 +92,7 @@ namespace XivAuth.Models
         /// <summary>A full-body portrait of this character. May return either a Lodestone URL or a CDN URL.</summary>
         /// <remarks>
         /// <list type="bullet">
-        /// <item>Required Scope: <c>character</c></item>
+        /// <item>Required Scope: <c>character</c>.</item>
         /// </list>
         /// </remarks>
         [JsonPropertyName("portrait_url")]
@@ -101,7 +101,7 @@ namespace XivAuth.Models
         /// <summary>A boolean flag indicating whether the character has been verified.</summary>
         /// <remarks>
         /// <list type="bullet">
-        /// <item>Required Scope: <c>character:manage</c></item>
+        /// <item>Required Scope: <c>character:manage</c>.</item>
         /// <item>This property checks for <see cref="VerifiedAt"/> not being <see langword="null"/> and therefore only <c>character</c> scope is needed.</item>
         /// </list>
         /// </remarks>
@@ -111,7 +111,7 @@ namespace XivAuth.Models
         /// <summary>The verification key that must be placed in the character’s Lodestone page.</summary>
         /// <remarks>
         /// <list type="bullet">
-        /// <item>Required Scope: <c>character:manage</c></item>
+        /// <item>Required Scope: <c>character:manage</c>.</item>
         /// </list>
         /// </remarks>
         [JsonPropertyName("verification_key")]
@@ -120,7 +120,7 @@ namespace XivAuth.Models
         /// <summary>The time this character was verified, if any. If <c>null</c>, the character is not verified.</summary>
         /// <remarks>
         /// <list type="bullet">
-        /// <item>Required Scope: <c>character</c></item>
+        /// <item>Required Scope: <c>character</c>.</item>
         /// </list>
         /// </remarks>
         [JsonPropertyName("verified_at")]
@@ -129,7 +129,7 @@ namespace XivAuth.Models
         /// <summary>The time this character binding was created.</summary>
         /// <remarks>
         /// <list type="bullet">
-        /// <item>Required Scope: <c>character</c></item>
+        /// <item>Required Scope: <c>character</c>.</item>
         /// </list>
         /// </remarks>
         [JsonPropertyName("created_at")]
@@ -138,7 +138,7 @@ namespace XivAuth.Models
         /// <summary>The time this character binding was last updated.</summary>
         /// <remarks>
         /// <list type="bullet">
-        /// <item>Required Scope: <c>character</c></item>
+        /// <item>Required Scope: <c>character</c>.</item>
         /// </list>
         /// </remarks>
         [JsonPropertyName("updated_at")]

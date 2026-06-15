@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace XivAuth.Models
 {
-    public sealed class UserModel : IModel
+    public sealed class UserModel : IRecord
     {
         /// <summary>The UUID of this user. Will be persistent.</summary>
         /// <remarks>

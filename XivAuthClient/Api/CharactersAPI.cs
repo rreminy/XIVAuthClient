@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Http.Json;
 using XivAuth.Internal;
@@ -6,27 +6,32 @@ using XivAuth.Models;
 
 namespace XivAuth.Api
 {
-    internal sealed class CharactersAPI : ICharactersAPI
+    internal sealed class CharactersApi : ICharactersApi
     {
         private IXivAuthUserClient UserClient { get; }
         private HttpClient HttpClient { get; }
         private XivAuthClientOptions Options => this.UserClient.Options;
         private XivAuthHelper Helper => this.Options.Helper;
 
-        public CharactersAPI(IXivAuthUserClient userClient, HttpClient httpClient)
+        public CharactersApi(IXivAuthUserClient userClient, HttpClient httpClient)
         {
             this.UserClient = userClient;
             this.HttpClient = httpClient;
         }
 
-        public Task<CharacterModel> GetAsync(string lodestoneId, CancellationToken cancellationToken = default)
+        public Task<CharacterModel> GetAsync(uint lodestoneId, CancellationToken cancellationToken = default)
         {
             return this.Helper.SendRequestAsync<CharacterModel>(this.HttpClient, HttpMethod.Get, $"characters/{lodestoneId}", null, cancellationToken);
         }
 
-        public Task<IEnumerable<CharacterModel>> GetAllAsync(CancellationToken cancellationToken = default)
+        public Task<IEnumerable<CharacterModel>> GetAllAsync(string? name = null, string? homeWorld = null, string? dataCenter = null, CancellationToken cancellationToken = default)
         {
-            return this.Helper.SendRequestAsync<IEnumerable<CharacterModel>>(this.HttpClient, HttpMethod.Get, "characters", null, cancellationToken);
+            if (name is null && homeWorld is null && dataCenter is null) return this.Helper.SendRequestAsync<IEnumerable<CharacterModel>>(this.HttpClient, HttpMethod.Get, "characters", null, cancellationToken);
+            var query = new List<string>();
+            if (name is not null) query.Add($"name={Uri.EscapeDataString(name)}");
+            if (homeWorld is not null) query.Add($"home_world={Uri.EscapeDataString(homeWorld)}");
+            if (dataCenter is not null) query.Add($"data_center={Uri.EscapeDataString(dataCenter)}");
+            return this.Helper.SendRequestAsync<IEnumerable<CharacterModel>>(this.HttpClient, HttpMethod.Get, $"characters?{string.Join('&', query)}", null, cancellationToken);
         }
 
         public Task<CharacterModel> RegisterAsync(string lodestoneId, CancellationToken cancellationToken = default)
@@ -63,23 +68,18 @@ namespace XivAuth.Api
 
         public Task VerifyAsync(string lodestoneId, CancellationToken cancellationToken = default)
         {
-            // TODO: POST /characters/{lodestone_id}/verify
-            // Status code 202 => return
-            // Other status => throw
-            /*
-             * Scopes required: character:manage
-             * 
-             * This API route will trigger an asynchronous verification attempt for the specified character.
-             * 
-             * Returns HTTP code 202 if the verification request was successfully enqueued. API endpoints
-             * are suggested to poll GET /characters/{lodestone_id} for updates. A verification attempt may
-             * be considered “failed” if the character still remains unverified after 300 seconds.
-             * 
-             * A future version of this API will return a Task ID which can be used to retrieve information
-             * about the verification task’s current status.
-             */
+            return this.Helper.SendRequestAsync(this.HttpClient, HttpMethod.Post, $"characters/{lodestoneId}/verify", null, cancellationToken);
+        }
 
-            throw new NotImplementedException();
+        public Task UnverifyAsync(string lodestoneId, CancellationToken cancellationToken = default)
+        {
+            return this.Helper.SendRequestAsync(this.HttpClient, HttpMethod.Delete, $"characters/{lodestoneId}/verify", null, cancellationToken);
+        }
+
+        public async Task<string> GetJwtAsync(string lodestoneId, CancellationToken cancellationToken = default)
+        {
+            var jwt = await this.Helper.SendRequestAsync<JwtModel>(this.HttpClient, HttpMethod.Get, $"characters/{lodestoneId}", null, cancellationToken).ConfigureAwait(false);
+            return jwt.Token;
         }
     }
 }

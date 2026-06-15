@@ -1,7 +1,7 @@
 namespace XivAuth.Models
 {
-    /// <summary>Model binding interface.</summary>
-    internal interface IModel
+    /// <summary>Record binding interface.</summary>
+    internal interface IRecord
     {
         /// <summary>The time this binding was created.</summary>
         public DateTime CreatedAt { get; }

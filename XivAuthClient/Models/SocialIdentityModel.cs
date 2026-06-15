@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace XivAuth.Models
 {
-    public sealed class SocialIdentityModel : IModel
+    public sealed class SocialIdentityModel : IRecord
     {
         /// <summary>An identifier for the provider of this social identity.</summary>
         [JsonPropertyName("provider")]

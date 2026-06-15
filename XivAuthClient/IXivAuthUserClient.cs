@@ -1,4 +1,4 @@
-﻿using XivAuth.Api;
+using XivAuth.Api;
 
 namespace XivAuth
 {
@@ -6,10 +6,10 @@ namespace XivAuth
     {
         public XivAuthClientOptions Options { get; }
 
-        /// <summary>Characters API</summary>
-        public ICharactersAPI Characters { get; }
+        /// <summary>Characters API.</summary>
+        public ICharactersApi Characters { get; }
 
-        /// <summary>User API</summary>
-        public IUserAPI User { get; }
+        /// <summary>User API.</summary>
+        public IUserApi User { get; }
     }
 }

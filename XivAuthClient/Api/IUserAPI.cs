@@ -1,8 +1,8 @@
-﻿using XivAuth.Models;
+using XivAuth.Models;
 
 namespace XivAuth.Api
 {
-    public interface IUserAPI
+    public interface IUserApi
     {
         /// <summary>Get current user information</summary>
         /// <param name="token">Cancellation token</param>
