@@ -61,7 +61,7 @@ namespace XivAuth.Api
 
         public async Task<bool> RefreshAsync(uint lodestoneId, CancellationToken cancellationToken = default)
         {
-            var response = await this.HttpClient.PostAsync(this.Options.Helper.GetEndpointUrl($"characters/{lodestoneId}/refresh"), null, cancellationToken);
+            var response = await this.HttpClient.PostAsync(this.Options.Helper.GetEndpointUrl($"characters/{lodestoneId}/refresh"), null, cancellationToken).ConfigureAwait(false);
             Debug.Assert(response.StatusCode is HttpStatusCode.Accepted or HttpStatusCode.UnprocessableEntity);
             return response.StatusCode == HttpStatusCode.Accepted; //422 for false
         }

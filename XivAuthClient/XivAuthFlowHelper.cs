@@ -69,8 +69,7 @@ namespace XivAuth
             using var response = await this.HttpClient.PostAsJsonAsync($"{this.Options.OAuthUrl}token", requestJson, cancellationToken).ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
 
-            await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
-            var tokenInfo = await JsonSerializer.DeserializeAsync<TokenInformation>(stream, cancellationToken: cancellationToken).ConfigureAwait(false);
+            var tokenInfo = await response.Content.ReadFromJsonAsync<TokenInformation>(cancellationToken).ConfigureAwait(false);
             Debug.Assert(tokenInfo is not null);
             return tokenInfo;
         }
