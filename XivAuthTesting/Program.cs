@@ -1,15 +1,8 @@
-﻿using System.Diagnostics;
-using System.Linq.Expressions;
+using System.Diagnostics;
 using System.Net;
 using System.Text;
-using System.Text.RegularExpressions;
-using Auth0.AuthenticationApi;
-using Auth0.AuthenticationApi.Models;
-using XivAuth;
-using System.Net.Http.Json;
-using Microsoft.IdentityModel.Tokens;
-using System.Text.Json;
-using System.Runtime.CompilerServices;
+using System;
+using System.Threading.Tasks;
 
 namespace XivAuth.Testing
 {
@@ -36,7 +29,7 @@ namespace XivAuth.Testing
 
             // Step 3: Wait for response via a callback URL
             Console.WriteLine($"Waiting for callback at {RedirectUrl}");
-            var context = await httpListener.GetContextAsync().WaitAsync(TimeSpan.FromSeconds(90));
+            var context = await httpListener.GetContextAsync().WaitAsync(TimeSpan.FromSeconds(300));
             Console.WriteLine($"Callback received: {context.Request.RawUrl}\n");
 
             // Step 4: Validate state and get Authorization Code
@@ -64,13 +57,20 @@ namespace XivAuth.Testing
             Console.WriteLine($"Bearer Token: {token.AccessToken}\n");
             
             // Step 6: Get XIVAuth User and get its information
-            using var user = client.GetUser(token.AccessToken);
-            var userInfo = await user.User.GetAsync();
-            Console.WriteLine($"{userInfo}\n");
+            using var clientUser = client.GetUser(token.AccessToken);
+            var user = await clientUser.User.GetAsync();
+            var userInfo = ModelUtils.GetDetailedString(user);
+            var userJwt = await clientUser.User.GetJwtAsync();
+            Console.WriteLine($"{userInfo}\n{userJwt}\n");
 
             // Step 7: Get all characters information
-            var characters = await user.Characters.GetAllAsync();
-            Console.WriteLine(string.Join('\n', characters.Select(ModelUtils.GetDetailedString)));
+            var characters = await clientUser.Characters.GetAllAsync();
+            foreach (var character in characters)
+            {
+                var characterInfo = ModelUtils.GetDetailedString(character);
+                var characterJwt = await clientUser.Characters.GetJwtAsync(character.LodestoneId);
+                Console.WriteLine($"{characterInfo}\n{characterJwt}\n");
+            }
         }
 
         public static ClientInformation GetClientInformation()

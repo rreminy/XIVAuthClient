@@ -1,20 +1,27 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace XivAuth
 {
     [SuppressMessage("Major Code Smell", "S3925")]
     public sealed class XivAuthException : Exception
     {
-        /// <summary>Errors list</summary>
+        /// <summary>Errors list.</summary>
         public IEnumerable<string> Errors { get; }
 
-        public XivAuthException(string? message = null, Exception? innerException = null, IEnumerable<string>? errors = null)
+        /// <summary>Error model exception, if any.</summary>
+        public Exception? ModelException { get; }
+
+        public XivAuthException(string? message = null, Exception? innerException = null, IEnumerable<string>? errors = null, Exception? modelException = null)
             : base(message ?? DeriveMessageFromErrors(errors), innerException)
         {
-            this.Errors = errors ?? Enumerable.Empty<string>();
+            this.Errors = errors ?? [];
+            this.ModelException = modelException;
         }
 
-        public XivAuthException(IEnumerable<string>? errors, Exception? innerException = null) : this(null, innerException, errors) { /* Empty */ }
+        public XivAuthException(IEnumerable<string>? errors, Exception? innerException = null, Exception? modelException = null) : this(null, innerException, errors, modelException) { /* Empty */ }
 
         private static string? DeriveMessageFromErrors(IEnumerable<string>? errors)
         {

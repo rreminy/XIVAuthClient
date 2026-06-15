@@ -1,6 +1,11 @@
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
+using System.Net.Http;
 using System.Net.Http.Json;
+using System.Threading;
+using System.Threading.Tasks;
 using XivAuth.Internal;
 using XivAuth.Models;
 
@@ -34,7 +39,7 @@ namespace XivAuth.Api
             return this.Helper.SendRequestAsync<IEnumerable<CharacterModel>>(this.HttpClient, HttpMethod.Get, $"characters?{string.Join('&', query)}", null, cancellationToken);
         }
 
-        public Task<CharacterModel> RegisterAsync(string lodestoneId, CancellationToken cancellationToken = default)
+        public Task<CharacterModel> RegisterAsync(uint lodestoneId, CancellationToken cancellationToken = default)
         {
             return this.RegisterAsyncCore(new() { LodestoneId = lodestoneId }, cancellationToken);
         }
@@ -49,37 +54,42 @@ namespace XivAuth.Api
             return this.Helper.SendRequestAsync<CharacterModel>(this.HttpClient, HttpMethod.Post, "characters", JsonContent.Create(registration), cancellationToken);
         }
 
-        public Task UnregisterAsync(string lodestoneId, CancellationToken cancellationToken = default)
+        public Task UnregisterAsync(uint lodestoneId, CancellationToken cancellationToken = default)
         {
             return this.Helper.SendRequestAsync(this.HttpClient, HttpMethod.Delete, $"characters/{lodestoneId}", null, cancellationToken);
         }
 
-        public async Task<bool> RefreshAsync(string lodestoneId, CancellationToken cancellationToken = default)
+        public async Task<bool> RefreshAsync(uint lodestoneId, CancellationToken cancellationToken = default)
         {
             var response = await this.HttpClient.PostAsync(this.Options.Helper.GetEndpointUrl($"characters/{lodestoneId}/refresh"), null, cancellationToken);
             Debug.Assert(response.StatusCode is HttpStatusCode.Accepted or HttpStatusCode.UnprocessableEntity);
             return response.StatusCode == HttpStatusCode.Accepted; //422 for false
         }
 
-        public Task UpdateAsync<CharacterModel>(string lodestoneId, CharacterUpdateModel updateModel, CancellationToken cancellationToken = default)
+        public Task UpdateAsync<CharacterModel>(uint lodestoneId, CharacterUpdateModel updateModel, CancellationToken cancellationToken = default)
         {
             return this.Helper.SendRequestAsync<CharacterModel>(this.HttpClient, HttpMethod.Patch, $"characters/{lodestoneId}", JsonContent.Create(updateModel), cancellationToken);
         }
 
-        public Task VerifyAsync(string lodestoneId, CancellationToken cancellationToken = default)
+        public Task VerifyAsync(uint lodestoneId, CancellationToken cancellationToken = default)
         {
             return this.Helper.SendRequestAsync(this.HttpClient, HttpMethod.Post, $"characters/{lodestoneId}/verify", null, cancellationToken);
         }
 
-        public Task UnverifyAsync(string lodestoneId, CancellationToken cancellationToken = default)
+        public Task UnverifyAsync(uint lodestoneId, CancellationToken cancellationToken = default)
         {
             return this.Helper.SendRequestAsync(this.HttpClient, HttpMethod.Delete, $"characters/{lodestoneId}/verify", null, cancellationToken);
         }
 
-        public async Task<string> GetJwtAsync(string lodestoneId, CancellationToken cancellationToken = default)
+        public async Task<string> GetJwtAsync(uint lodestoneId, CancellationToken cancellationToken = default)
         {
-            var jwt = await this.Helper.SendRequestAsync<JwtModel>(this.HttpClient, HttpMethod.Get, $"characters/{lodestoneId}", null, cancellationToken).ConfigureAwait(false);
+            var jwt = await this.Helper.SendRequestAsync<JwtModel>(this.HttpClient, HttpMethod.Get, $"characters/{lodestoneId}/jwt", null, cancellationToken).ConfigureAwait(false);
             return jwt.Token;
+        }
+
+        public async Task<object?> GetLodestoneAsync(uint lodestoneId, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException($"characters/{lodestoneId}/lodestone");
         }
     }
 }

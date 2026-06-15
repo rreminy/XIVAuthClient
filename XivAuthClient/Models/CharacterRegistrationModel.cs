@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
 namespace XivAuth.Models
 {
@@ -6,7 +6,7 @@ namespace XivAuth.Models
     {
         [JsonPropertyName("lodestone_id")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-        public string? LodestoneId { get; init; }
+        public uint? LodestoneId { get; init; }
 
         [JsonPropertyName("name")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]

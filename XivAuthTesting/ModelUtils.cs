@@ -1,9 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using XivAuth.Models;
 
 namespace XivAuth.Testing
@@ -28,8 +25,33 @@ namespace XivAuth.Testing
             lines.Add($"Updated At: {character.UpdatedAt}");
             lines.Add($"Persistent Key: {character.PersistentKey}");
             lines.Add(new string('-', header.Length));
-            lines.Add(string.Empty);
             return string.Join('\n', lines);
+        }
+
+        public static string GetDetailedString(UserModel user)
+        {
+            var socials = user.SocialIdentities;
+            var lines = new List<string>(15);
+            var header = $"{user.Id}";
+            lines.Add(new string('=', header.Length));
+            lines.Add(header);
+            lines.Add(new string('=', header.Length));
+            lines.Add($"Email: {user.Email} (Verified: {ValueOrNullString(user.EmailVerified)})");
+            lines.Add($"MFA: {user.MfaEnabled}");
+            lines.Add($"Has Verified Characters: {user.VerifiedCharacters}");
+            lines.Add($"Socials Count: {ValueOrNullString(socials?.Count())}");
+            lines.Add($"Created At: {user.CreatedAt}");
+            lines.Add($"Updated At: {user.UpdatedAt}");
+            lines.Add(new string('-', header.Length));
+            return string.Join('\n', lines);
+        }
+
+
+        public const string NullString = "null";
+        public static string ValueOrNullString<T>(T? value)
+        {
+            if (value is null) return NullString;
+            return value.ToString()!;
         }
     }
 }

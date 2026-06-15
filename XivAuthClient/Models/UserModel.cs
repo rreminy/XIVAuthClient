@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace XivAuth.Models
@@ -29,7 +31,7 @@ namespace XivAuth.Models
         /// </list>
         /// </remarks>
         [JsonPropertyName("email_verified")]
-        public bool EmailVerified { get; init; }
+        public bool? EmailVerified { get; init; }
 
         /// <summary></summary>
         /// <remarks>
@@ -38,7 +40,7 @@ namespace XivAuth.Models
         /// </list>
         /// </remarks>
         [JsonPropertyName("social_identities")]
-        public IEnumerable<SocialIdentityModel> SocialIdentities { get; init; } = [];
+        public IEnumerable<SocialIdentityModel>? SocialIdentities { get; init; }
 
         /// <summary></summary>
         /// <remarks>

@@ -1,3 +1,5 @@
+using System;
+
 namespace XivAuth.Models
 {
     /// <summary>Record binding interface.</summary>

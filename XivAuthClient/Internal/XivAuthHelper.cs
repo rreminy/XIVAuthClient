@@ -1,5 +1,11 @@
-﻿using System.Diagnostics;
+using System;
+using System.Diagnostics;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
+using System.Threading;
+using System.Threading.Tasks;
 using XivAuth.Models;
 
 namespace XivAuth.Internal
@@ -23,14 +29,13 @@ namespace XivAuth.Internal
         public async Task<T> SendRequestAsync<T>(HttpClient httpClient, HttpMethod method, string endpoint, HttpContent? content, CancellationToken cancellationToken = default)
         {
             using var response = await this.SendRequestCoreAsync(httpClient, method, endpoint, content, cancellationToken).ConfigureAwait(false);
-            await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
-            return (await JsonSerializer.DeserializeAsync<T>(stream, cancellationToken: cancellationToken).ConfigureAwait(false)) ?? throw new JsonException();
+            return await response.Content.ReadFromJsonAsync<T>(cancellationToken).ConfigureAwait(false) ?? throw new JsonException();
         }
 
         private async Task<HttpResponseMessage> SendRequestCoreAsync(HttpClient httpClient, HttpMethod method, string endpoint, HttpContent? content, CancellationToken cancellationToken = default)
         {
             using var request = new HttpRequestMessage(method, this.GetEndpointUrl(endpoint)) { Content = content };
-            var response = await httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
+            var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
             await ThrowIfNotSuccess(response, cancellationToken).ConfigureAwait(false);
             return response;
         }
@@ -45,20 +50,12 @@ namespace XivAuth.Internal
             {
                 try
                 {
-                    await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
-                    var errors = await JsonSerializer.DeserializeAsync<ErrorModel>(stream, cancellationToken: cancellationToken).ConfigureAwait(false);
+                    var errors = await response.Content.ReadFromJsonAsync<ErrorModel>(cancellationToken).ConfigureAwait(false);
                     throw new XivAuthException(errors?.Errors, ex);
                 }
                 catch (Exception modelException)
                 {
-#if DEBUG
-                    // This exception should in theory never happen,
-                    // therefore this is here to debug this exception
-                    // during development should it happen.
-                    if (Debugger.IsAttached) Debugger.Break();
-                    GC.KeepAlive(modelException);
-#endif
-                    throw new XivAuthException(null, ex);
+                    throw new XivAuthException(null, ex, modelException);
                 }
             }
         }

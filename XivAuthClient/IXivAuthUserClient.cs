@@ -1,3 +1,4 @@
+using System;
 using XivAuth.Api;
 
 namespace XivAuth

@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel;
 using System.Text.Json.Serialization;
 
@@ -14,7 +15,7 @@ namespace XivAuth.Models
         /// </remarks>
         [EditorBrowsable(EditorBrowsableState.Advanced)]
         [JsonPropertyName("__crid")]
-        public string __CrId { get; init; }
+        public string? __CrId { get; init; }
 
         /// <summary>Internal ID for the globally-tracked character. Persistent across users, but may change if the character has been fully deleted from the XIVAuth database.</summary>
         /// <remarks>
@@ -24,7 +25,7 @@ namespace XivAuth.Models
         /// </remarks>
         [EditorBrowsable(EditorBrowsableState.Advanced)]
         [JsonPropertyName("__cid")]
-        public string __CId { get; init; }
+        public string? __CId { get; init; }
 
         /// <summary>An opaque value representing this character/user combination. Guaranteed to remain consistent so long as the character is associated with the same user, even if the character is removed and re-added.</summary>
         /// <remarks>
@@ -42,7 +43,7 @@ namespace XivAuth.Models
         /// </list>
         /// </remarks>
         [JsonPropertyName("lodestone_id")]
-        public required string LodestoneId { get; init; } // Could be named Id (NOTE: Passed as string)
+        public required uint LodestoneId { get; init; } // Could be named Id (NOTE: Passed as string)
 
         /// <summary>The last seen/reported name for this character according to Lodestone.</summary>
         /// <remarks>
